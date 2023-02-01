@@ -32,9 +32,9 @@ From these, we want to predict:
     6.  Douglas-fir
     7.  Krummholz
 
-Kaggle provides a labeled training data set of 15,120 observations, and an unlabeled test data set of 565,892 observations to be used for the submission.
+Kaggle provides a labeled training data set of 15,120 observations, and an unlabeled test data set of 581,012 observations to be used for the submission.
 
 * training set of 15,120 observations
-* test set of 565,892 observations
+* test set of 581,012 observations
 * sample submission
 
