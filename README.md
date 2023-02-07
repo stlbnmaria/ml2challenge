@@ -38,3 +38,5 @@ Kaggle provides a labeled training data set of 15,120 observations, and an unlab
 * test set of 581,012 observations
 * sample submission
 
+## Latex Report
+https://www.overleaf.com/project/63e22b0c159f323acb0995f2
