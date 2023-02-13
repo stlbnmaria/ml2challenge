@@ -38,3 +38,7 @@ Kaggle provides a labeled training data set of 15,120 observations, and an unlab
 * test set of 565,892 observations
 * sample submission
 
+
+Possible paper & sources
+- https://www.ijcaonline.org/archives/volume182/number30/wagh-2018-ijca-918191.pdf
+- https://www.kaggle.com/code/rsizem2/forest-cover-type-feature-engineering
