@@ -3,7 +3,14 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 
-def euclidean_dist(X: pd.DataFrame):
+# TODO: drop used columns so that in modeling there are no linear combinations etc.
+
+
+def euclidean_dist(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This function calculates the eucledian distance to nearest surface water features
+    given a horizontal and vertical distance.
+    """
     X = X.copy()  # modify a copy of X
 
     # Compute the Euclidean distance to Hydrology
@@ -20,26 +27,41 @@ def euclidean_dist(X: pd.DataFrame):
     return X
 
 
-def linear_dist(X: pd.DataFrame):
+def linear_dist(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions calculates linear combinations of distances to hydrology, 
+    fire points and roadways, inlcuding:
+        - hydrology + fire points
+        - |hydrology - fire points|
+        - hydrology + roadways
+        - |hydrology - roadways|
+        - fire + roadways
+        - |fire - roadways|
+    """
     X = X.copy()  # modify a copy of X
 
     cols = [
-        "Horizontal_Distance_To_Hydrology",
-        "Horizontal_Distance_To_Fire_Points",
-        "Horizontal_Distance_To_Roadways",
+        X["Horizontal_Distance_To_Hydrology"],
+        X["Horizontal_Distance_To_Fire_Points"],
+        X["Horizontal_Distance_To_Roadways"],
     ]
 
     # Linear Combination of distance
-    X["Hyd_p_Fire"] = X[cols[0]] + X[cols[1]]
-    X["Hyd_m_Fire"] = abs(X[cols[0]] - X[cols[1]])
-    X["Hyd_p_Road"] = X[cols[0]] + X[cols[2]]
-    X["Hyd_m_Road"] = abs(X[cols[0]] - X[cols[2]])
-    X["Fire_p_Road"] = X[cols[1]] + X[cols[2]]
-    X["Fire_m_Road"] = abs(X[cols[1]] - X[cols[2]])
+    X["Hyd_p_Fire"] = cols[0] + cols[1]
+    X["Hyd_m_Fire"] = abs(cols[0] - cols[1])
+    X["Hyd_p_Road"] = cols[0] + cols[2]
+    X["Hyd_m_Road"] = abs(cols[0] - cols[2])
+    X["Fire_p_Road"] = cols[1] + cols[2]
+    X["Fire_m_Road"] = abs(cols[1] - cols[2])
     return X
 
 
-def mean_hillshade(X: pd.DataFrame):
+def mean_hillshade(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions calculates a mean hillshade for every observation of X, 
+    i.e., it averages the three hillshades at 9 am, noon and 3pm to create 
+    one hillshade value for one tree. 
+    """
     X = X.copy()  # modify a copy of X
 
     # Mean distance to Hillshade
@@ -47,7 +69,12 @@ def mean_hillshade(X: pd.DataFrame):
     return X
 
 
-def morning_hillshade(X: pd.DataFrame):
+def morning_hillshade(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions calculates a mean morning hillshade for every observation of X, 
+    i.e., it averages the two hillshades at 9 am and noon to create 
+    one hillshade value for the morning for one tree. 
+    """
     X = X.copy()  # modify a copy of X
 
     # Mean distance to Hillshade
@@ -55,7 +82,11 @@ def morning_hillshade(X: pd.DataFrame):
     return X
 
 
-def mean_amenties(X: pd.DataFrame):
+def mean_amenties(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions calculates the average distance to hydrology, 
+    fire points and roadways.
+    """
     X = X.copy()  # modify a copy of X
 
     # Mean distance to Amenities
@@ -67,7 +98,15 @@ def mean_amenties(X: pd.DataFrame):
     return X
 
 
-def aspect_dir(X: pd.DataFrame):
+def aspect_dir(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions converts the degree values of the variable aspect
+    into four main directions.
+        - North: 0-45 degrees and 315-360 degrees
+        - East: 45-135 degrees
+        - South: 135-225 degrees
+        - West: 225-325 degrees
+    """
     X = X.copy()  # modify a copy of X
 
     asp = X["Aspect"]
@@ -80,7 +119,19 @@ def aspect_dir(X: pd.DataFrame):
     return X
 
 
-def climatic_zone(X: pd.DataFrame):
+def climatic_zone(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions aggregates the second digit of the USFS Ecological Landtype Units which 
+    encodes the following climatic zones: 
+        1: lower montane dry
+        2: lower montane
+        3: montane dry
+        4: montane
+        5: montane dry and montane
+        6: montane and subalpine
+        7: subalpine
+        8: alpine
+    """
     X = X.copy()  # modify a copy of X
 
     # Climatic Zones
@@ -96,7 +147,19 @@ def climatic_zone(X: pd.DataFrame):
     return X
 
 
-def geologic_zone(X: pd.DataFrame):
+def geologic_zone(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions aggregates the second digit of the USFS Ecological Landtype Units which 
+    encodes the following geologic zones: 
+        1: alluvium
+        2: glacial
+        3: shale
+        4: sandstone
+        5: mixed sedimentary
+        6: unspecified in the USFS ELU Survey
+        7: igneous and metamorphic
+        8: volcanic
+    """
     X = X.copy()  # modify a copy of X
 
     # geologic zones
@@ -107,7 +170,14 @@ def geologic_zone(X: pd.DataFrame):
     return X
 
 
-def soil_type(X: pd.DataFrame):
+def soil_type(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This functions aggregates the different soil types in the USFS Ecological 
+    Landtype Units description which encodes the following: 
+        1: stony
+        2: rubly
+        3: other
+    """
     X = X.copy()  # modify a copy of X
 
     # Soil Type
@@ -117,7 +187,11 @@ def soil_type(X: pd.DataFrame):
     return X
 
 
-def scaling(X: pd.DataFrame):
+def scaling(X: pd.DataFrame) -> pd.DataFrame:
+    """
+    This function does a standard scaling on all numerical columns in the data set 
+    and returns the whole df.
+    """
     X = X.copy()  # modify a copy of X
 
     # scale numerical values
