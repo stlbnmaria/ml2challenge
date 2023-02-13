@@ -135,7 +135,7 @@ def climatic_zone(X: pd.DataFrame) -> pd.DataFrame:
     X = X.copy()  # modify a copy of X
 
     # Climatic Zones
-    X["Clim2"] = X.loc[:, X.columns.str.contains("^Soil_Type[2-6]$")].max(axis=1)
+    X["Clim2"] = X.loc[:, X.columns.str.contains("^Soil_Type[1-6]$")].max(axis=1)
     X["Clim3"] = X.loc[:, X.columns.str.contains("^Soil_Type[78]$")].max(axis=1)
     X["Clim4"] = X.loc[:, X.columns.str.contains("^Soil_Type[1][0-3]$|Soil_Type9")].max(
         axis=1
