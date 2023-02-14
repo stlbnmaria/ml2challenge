@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 
+from training import training_estimator
+
 ###############################################################################
 
 parser = argparse.ArgumentParser(description = 'Main Script to Run Training')
@@ -14,3 +16,5 @@ args = parser.parse_args()
 if __name__ == "__main__":
 
     input_args = vars(args)
+    
+    training_estimator()

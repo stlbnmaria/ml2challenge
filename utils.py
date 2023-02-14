@@ -1,11 +1,13 @@
+import os
 from typing import Optional
 
+import numpy as np
+import pandas as pd
 from sklearn.preprocessing import FunctionTransformer
 
 from data_engineering import data_engineering
 
 # TODO: write a function to write submission
-# TODO: write a function to get cross validation fold
 
 
 def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
@@ -50,3 +52,26 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
         "scaling": FunctionTransformer(data_engineering.scaling),
     }
     return transformations
+
+
+def load_train_data(path: str = "./data") -> tuple[pd.DataFrame, np.array]:
+    file = "train.csv"
+    df = pd.read_csv(os.path.join(path, file))
+    X = df.drop(columns="Cover_Type")
+    y = np.array(df.Cover_Type)
+
+    # perform checks to assure size matches the expectations
+    assert X.shape == (15_120, 55)
+    assert y.shape == (15_120,)
+    
+    return X, y
+
+
+def load_test_data(path: str = "./data") -> pd.DataFrame:
+    file = "test-full.csv"
+    df = pd.read_csv(os.path.join(path, file))
+
+    # perform checks to assure size matches the expectations
+    assert df.shape == (581_012, 55)
+
+    return df
