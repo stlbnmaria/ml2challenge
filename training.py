@@ -7,6 +7,10 @@ from sklearn.pipeline import Pipeline
 from utils import get_possible_feature_eng, load_train_data
 from modeling.estimators import get_estimator
 
+# TODO: think about trying PCA
+# TODO: first try different models, then different feature engineering, then tune the best three models
+# TODO: think about creating ensmeble/second layer prediction model in the end
+
 
 def select_feature_engineering(
     feat_eng: list[str], drop_list: Optional[list[bool]] = None

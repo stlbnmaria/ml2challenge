@@ -7,8 +7,6 @@ from sklearn.preprocessing import FunctionTransformer
 
 from data_engineering import data_engineering
 
-# TODO: write a function to write submission
-
 
 def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
     """
