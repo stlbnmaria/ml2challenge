@@ -6,6 +6,7 @@ from sklearn.model_selection import KFold, cross_validate
 from sklearn.pipeline import Pipeline
 
 from utils import get_possible_feature_eng, load_train_data
+from modeling.estimators import get_estimator
 
 
 # TODO: take estimator, feat_eng and drop list out of the function training_estimator and implement in modeling or something
@@ -30,18 +31,6 @@ def select_feature_engineering(
     return list(selected_transf.items())
 
 
-
-def get_estimator():
-    """
-    This function is a placeholder for modeling inputs.
-    """
-    # define the input varibales
-    estimator = LogisticRegression()
-    feat_eng = ["scaling"]
-    drop_list = None
-    return estimator, feat_eng, drop_list
-
-
 def get_training_pipeline(
     estimator,
     feat_eng: Optional[list[str]] = None,
@@ -64,18 +53,20 @@ def get_training_pipeline(
     return pipe
 
 
-def training_cv() -> None:
+def training_cv(model_class: str) -> None:
     """
     This function trains an estimator on a 5-fold cv of the train data set
     and prints the train and test accuracy on every fold.
     """
     # define the input varibales
     X, y = load_train_data()
-    estimator, feat_eng, drop_list = get_estimator()
+    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
     cv = KFold(shuffle=True)
 
     # load pipe
     pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    if grid is not None:
+        pipe.set_params(**grid)
 
     # perform cross validation on training data
     cv_results = cross_validate(
@@ -95,22 +86,26 @@ def training_cv() -> None:
             f"Fold {i}: training accuracy {cv_results['train_score'][i]:.3f}, testing accuracy {cv_results['test_score'][i]:.3f}"
         )
     print(f"----------- Mean train accuracy: {np.mean(cv_results['train_score']):.3f} -----------")
-    print(f"----------- Mean test accuracy: {np.mean(cv_results['test_score']):.3f} -----------")
+    print(f"----------- Mean test accuracy:  {np.mean(cv_results['test_score']):.3f} -----------")
 
 
-def training_estimator() -> Pipeline:
+def training_estimator(model_class: str) -> Pipeline:
     """
     This function trains an estimator on the whole data sets and returns the model.
     """
     # define the input varibales
     X, y = load_train_data()
-    estimator, feat_eng, drop_list = get_estimator()
+    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
 
     # get pipe and fit it on the train data 
     pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    if grid is not None:
+        pipe.set_params(**grid)
     pipe.fit(
         X=X,
         y=y,
     )
+
+    print(f"----------- Train accuracy: {pipe.score(X, y):.3f} -----------")
 
     return pipe
