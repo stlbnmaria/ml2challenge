@@ -3,7 +3,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from scipy import stats
+from sklearn.pipeline import Pipeline
 
 from utils import load_test_data
 from training import training_estimator
@@ -11,9 +11,9 @@ from training import training_estimator
 # TODO: write function to plot confusion matrix to understand predictions
 
 
-def predict_on_test(classifier):
+def predict_on_test(classifier: Pipeline) -> tuple[np.array]:
     """
-    This functions predicts class of every observation on the test set 
+    This functions predicts class of every observation on the test set
     given a trained classifier. It returns the test ids and predictions.
     """
     # load test data and create df to predict on and
@@ -29,7 +29,7 @@ def predict_on_test(classifier):
     return test_id, preds
 
 
-def create_submission(classifier, sub_name: str, path: str = "./submissions"):
+def create_submission(classifier: Pipeline, sub_name: str, path: str = "./submissions"):
     """
     This function takes as input a list of k classifiers from a k-fold cv training
     and saves the predictions in submission format as csv.
@@ -46,9 +46,9 @@ def create_submission(classifier, sub_name: str, path: str = "./submissions"):
     print("----------- Submission saved successfully -----------")
 
 
-def run_train_submission():
+def run_train_submission() -> None:
     """
-    This function runs the training of a classifier on the whole train data set, 
+    This function runs the training of a classifier on the whole train data set,
     does predictions on the test set and saves a csv ready for submission.
     """
     cv_classifiers = training_estimator()
