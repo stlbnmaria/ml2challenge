@@ -1,5 +1,6 @@
 from typing import Optional
 
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.pipeline import Pipeline
@@ -93,6 +94,8 @@ def training_cv() -> None:
         print(
             f"Fold {i}: training accuracy {cv_results['train_score'][i]:.3f}, testing accuracy {cv_results['test_score'][i]:.3f}"
         )
+    print(f"----------- Mean train accuracy: {np.mean(cv_results['train_score']):.3f} -----------")
+    print(f"----------- Mean test accuracy: {np.mean(cv_results['test_score']):.3f} -----------")
 
 
 def training_estimator() -> Pipeline:
