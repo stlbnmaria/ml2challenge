@@ -37,7 +37,7 @@ def create_submission(classifier: Pipeline, sub_name: str, path: str = "./submis
     test_id, preds = predict_on_test(classifier)
     submission = pd.DataFrame({"Id": test_id, "Cover_Type": preds})
     timestamp = datetime.today().strftime("%Y%m%d_%H%M")
-    sub_name = timestamp + "_" + sub_name
+    sub_name = timestamp + "_" + sub_name + ".csv"
 
     if not os.path.exists(path):
         os.makedirs(path)
