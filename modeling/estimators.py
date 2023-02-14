@@ -3,6 +3,7 @@ import os
 from ast import literal_eval
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 
 
 def get_modeling_inputs(path: str = "./modeling/") -> tuple:
@@ -48,6 +49,8 @@ def get_estimator(model_class: str) -> tuple:
     # get estimator based on specified model class
     if model_class == "LogReg":
         estimator = LogisticRegression()
+    elif model_class == "XGB":
+        estimator = XGBClassifier()
     else:
         print(
             "Specified estimator could not be found in possible list. Used default LogisticRegression() instead."

@@ -7,8 +7,8 @@ from sklearn.pipeline import Pipeline
 from utils import get_possible_feature_eng, load_train_data
 from modeling.estimators import get_estimator
 
-# TODO: think about trying PCA
-# TODO: first try different models, then different feature engineering, then tune the best three models
+# TODO: think about trying PCA
+# TODO: first try different models, then different feature engineering, then tune the best three models
 # TODO: think about creating ensmeble/second layer prediction model in the end
 
 
@@ -59,7 +59,7 @@ def training_cv(model_class: str) -> None:
     and prints the train and test accuracy on every fold.
     """
     # define the input varibales
-    X, y = load_train_data()
+    X, y, _ = load_train_data()
     estimator, feat_eng, drop_list, grid = get_estimator(model_class)
     cv = KFold(shuffle=True)
 
@@ -93,12 +93,12 @@ def training_cv(model_class: str) -> None:
     )
 
 
-def training_estimator(model_class: str) -> Pipeline:
+def training_estimator(model_class: str) -> tuple:
     """
-    This function trains an estimator on the whole data sets and returns the model.
+    This function trains an estimator on the whole data sets and returns the model and the label encoder.
     """
     # define the input varibales
-    X, y = load_train_data()
+    X, y, le = load_train_data()
     estimator, feat_eng, drop_list, grid = get_estimator(model_class)
 
     # get pipe and fit it on the train data
@@ -112,4 +112,4 @@ def training_estimator(model_class: str) -> Pipeline:
 
     print(f"----------- Train accuracy: {pipe.score(X, y):.3f} -----------")
 
-    return pipe
+    return pipe, le

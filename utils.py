@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import FunctionTransformer, LabelEncoder
 
 from data_engineering import data_engineering
 
@@ -52,17 +52,22 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
     return transformations
 
 
-def load_train_data(path: str = "./data") -> tuple[pd.DataFrame, np.array]:
+def load_train_data(
+    path: str = "./data",
+) -> tuple[pd.DataFrame, np.array, LabelEncoder]:
     file = "train.csv"
     df = pd.read_csv(os.path.join(path, file))
     X = df.drop(columns="Cover_Type")
     y = np.array(df.Cover_Type)
 
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
     # perform checks to assure size matches the expectations
     assert X.shape == (15_120, 55)
     assert y.shape == (15_120,)
 
-    return X, y
+    return X, y, le
 
 
 def load_test_data(path: str = "./data") -> pd.DataFrame:
