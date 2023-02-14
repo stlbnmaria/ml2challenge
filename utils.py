@@ -14,8 +14,8 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
     """
     This function returns a dict with all possible data engineering functions
     that can be used in training which are ready to be used in a pipeline
-    as they have been transformed by FunctionTransformer from sklearn. 
-    The drop_list should specify a list of booleans if the original variable should 
+    as they have been transformed by FunctionTransformer from sklearn.
+    The drop_list should specify a list of booleans if the original variable should
     be droped after the feature engineering. If it is None, no variables will be droped.
     """
     if drop_list is None:
@@ -63,7 +63,7 @@ def load_train_data(path: str = "./data") -> tuple[pd.DataFrame, np.array]:
     # perform checks to assure size matches the expectations
     assert X.shape == (15_120, 55)
     assert y.shape == (15_120,)
-    
+
     return X, y
 
 

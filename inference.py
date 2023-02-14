@@ -46,10 +46,10 @@ def create_submission(classifier: Pipeline, sub_name: str, path: str = "./submis
     print("----------- Submission saved successfully -----------")
 
 
-def run_train_submission(model_class: str) -> None:
+def run_train_submission(model_class: str, sub_name: str) -> None:
     """
     This function runs the training of a classifier on the whole train data set,
     does predictions on the test set and saves a csv ready for submission.
     """
     cv_classifiers = training_estimator(model_class)
-    create_submission(cv_classifiers, "test")
+    create_submission(cv_classifiers, sub_name)

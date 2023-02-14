@@ -9,9 +9,6 @@ from utils import get_possible_feature_eng, load_train_data
 from modeling.estimators import get_estimator
 
 
-# TODO: take estimator, feat_eng and drop list out of the function training_estimator and implement in modeling or something
-
-
 def select_feature_engineering(
     feat_eng: list[str], drop_list: Optional[list[bool]] = None
 ) -> list:
@@ -85,8 +82,12 @@ def training_cv(model_class: str) -> None:
         print(
             f"Fold {i}: training accuracy {cv_results['train_score'][i]:.3f}, testing accuracy {cv_results['test_score'][i]:.3f}"
         )
-    print(f"----------- Mean train accuracy: {np.mean(cv_results['train_score']):.3f} -----------")
-    print(f"----------- Mean test accuracy:  {np.mean(cv_results['test_score']):.3f} -----------")
+    print(
+        f"----------- Mean train accuracy: {np.mean(cv_results['train_score']):.3f} -----------"
+    )
+    print(
+        f"----------- Mean test accuracy:  {np.mean(cv_results['test_score']):.3f} -----------"
+    )
 
 
 def training_estimator(model_class: str) -> Pipeline:
@@ -97,7 +98,7 @@ def training_estimator(model_class: str) -> Pipeline:
     X, y = load_train_data()
     estimator, feat_eng, drop_list, grid = get_estimator(model_class)
 
-    # get pipe and fit it on the train data 
+    # get pipe and fit it on the train data
     pipe = get_training_pipeline(estimator, feat_eng, drop_list)
     if grid is not None:
         pipe.set_params(**grid)
