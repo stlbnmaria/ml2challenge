@@ -1,7 +1,8 @@
 import argparse
 from pathlib import Path
 
-from training import training_estimator
+from training import training_cv
+from inference import run_train_submission
 
 ###############################################################################
 
@@ -17,4 +18,7 @@ if __name__ == "__main__":
 
     input_args = vars(args)
     
-    training_estimator()
+    if input_args["goal"] == "test":
+        training_cv()
+    elif input_args["goal"] == "submission":
+        run_train_submission()

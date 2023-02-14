@@ -29,6 +29,18 @@ def select_feature_engineering(
     return list(selected_transf.items())
 
 
+
+def get_estimator():
+    """
+    This function is a placeholder for modeling inputs.
+    """
+    # define the input varibales
+    estimator = LogisticRegression()
+    feat_eng = ["scaling"]
+    drop_list = None
+    return estimator, feat_eng, drop_list
+
+
 def get_training_pipeline(
     estimator,
     feat_eng: Optional[list[str]] = None,
@@ -51,16 +63,18 @@ def get_training_pipeline(
     return pipe
 
 
-def training_estimator():
+def training_cv() -> None:
+    """
+    This function trains an estimator on a 5-fold cv of the train data set
+    and prints the train and test accuracy on every fold.
+    """
     # define the input varibales
-    estimator = LogisticRegression()
-    feat_eng = ["scaling"]
-    drop_list = None
-
-    # load pipe, train data and initialise cross validation split
-    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
     X, y = load_train_data()
+    estimator, feat_eng, drop_list = get_estimator()
     cv = KFold(shuffle=True)
+
+    # load pipe
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
 
     # perform cross validation on training data
     cv_results = cross_validate(
@@ -68,6 +82,7 @@ def training_estimator():
         X=X,
         y=y,
         cv=cv,
+        n_jobs=4,
         scoring="accuracy",
         return_train_score=True,
         return_estimator=True,
@@ -78,3 +93,21 @@ def training_estimator():
         print(
             f"Fold {i}: training accuracy {cv_results['train_score'][i]:.3f}, testing accuracy {cv_results['test_score'][i]:.3f}"
         )
+
+
+def training_estimator() -> Pipeline:
+    """
+    This function trains an estimator on the whole data sets and returns the model.
+    """
+    # define the input varibales
+    X, y = load_train_data()
+    estimator, feat_eng, drop_list = get_estimator()
+
+    # get pipe and fit it on the train data 
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    pipe.fit(
+        X=X,
+        y=y,
+    )
+
+    return pipe
