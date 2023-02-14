@@ -4,3 +4,4 @@ __pycache__
 data
 submissions
 modeling_inputs.xlsx
+catboost_info
