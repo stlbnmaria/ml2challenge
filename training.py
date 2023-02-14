@@ -1,7 +1,6 @@
 from typing import Optional
 
 import numpy as np
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.pipeline import Pipeline
 

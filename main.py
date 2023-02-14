@@ -1,5 +1,4 @@
 import argparse
-from pathlib import Path
 
 from training import training_cv
 from inference import run_train_submission
@@ -27,4 +26,6 @@ if __name__ == "__main__":
     if input_args["goal"] == "test":
         training_cv(model_class=input_args["model"])
     elif input_args["goal"] == "submission":
-        run_train_submission(model_class=input_args["model"], sub_name=input_args["subname"])
+        run_train_submission(
+            model_class=input_args["model"], sub_name=input_args["subname"]
+        )
