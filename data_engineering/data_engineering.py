@@ -221,8 +221,15 @@ def scaling(X: pd.DataFrame) -> pd.DataFrame:
     """
     X = X.copy()  # modify a copy of X
 
+    # reset index to insure it works on subsets of the data
+    X.reset_index(inplace=True, drop=True)
+
+    try: 
+        X.drop(columns="Id", inplace=True)
+    except:
+        print("No Id column found in the data")
+
     # scale numerical values
-    X.drop(columns="Id", inplace=True)
     X_col = X.columns
     X_possible_col = [
         "Elevation",
