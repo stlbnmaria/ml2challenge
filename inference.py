@@ -25,7 +25,7 @@ def predict_on_test(classifier: Pipeline, le: LabelEncoder) -> tuple[np.array]:
     preds = classifier.predict(X_test)
 
     # get original labels from 1-7
-    preds = le.inverse_transform(preds)
+    preds = le.inverse_transform(preds.flatten())
 
     # check that the prediction vetor has the right size
     assert preds.shape == (len(test_id),)

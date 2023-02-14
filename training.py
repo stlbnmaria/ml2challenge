@@ -74,7 +74,7 @@ def training_cv(model_class: str) -> None:
         X=X,
         y=y,
         cv=cv,
-        n_jobs=4,
+        n_jobs=6,
         scoring="accuracy",
         return_train_score=True,
         return_estimator=True,
