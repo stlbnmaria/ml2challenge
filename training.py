@@ -1,7 +1,10 @@
+from datetime import datetime
+import os
 from typing import Optional
 
 import numpy as np
-from sklearn.model_selection import KFold, cross_validate
+import pandas as pd
+from sklearn.model_selection import KFold, cross_validate, GridSearchCV
 from sklearn.pipeline import Pipeline
 
 from utils import get_possible_feature_eng, load_train_data
@@ -113,3 +116,33 @@ def training_estimator(model_class: str) -> tuple:
     print(f"----------- Train accuracy: {pipe.score(X, y):.3f} -----------")
 
     return pipe, le
+
+
+def tuning_estimator(model_class: str) -> None:
+    """
+    This function performs grid tuning for an estimator and saves the results in a subfolder of modeling.
+    """
+    # define the input varibales
+    X, y, _ = load_train_data()
+    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
+    out_path = os.path.join("./modeling", model_class)
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+    timestamp = datetime.today().strftime("%Y%m%d_%H%M")
+
+    # load pipe
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+
+    # perform grid tuning
+    clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=4, cv=5, return_train_score=True)
+    clf.fit(X, y)
+
+    # saving cv_results
+    results = pd.DataFrame(clf.cv_results_)
+    results.to_csv(
+        os.path.join(out_path, f"{timestamp}_cv_results.csv"), index=False
+    )
+    print(f"----------- GridSearchCV results saved successfully-----------")
+
+    best_val_score = max(results["mean_test_score"])
+    print(f"----------- Best avg. validation accuracy: {best_val_score:.3f} -----------")

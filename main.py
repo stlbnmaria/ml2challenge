@@ -1,6 +1,6 @@
 import argparse
 
-from training import training_cv
+from training import training_cv, tuning_estimator
 from inference import run_train_submission
 
 ###############################################################################
@@ -29,3 +29,5 @@ if __name__ == "__main__":
         run_train_submission(
             model_class=input_args["model"], sub_name=input_args["subname"]
         )
+    elif input_args["goal"] == "tuning":
+        tuning_estimator(model_class=input_args["model"])
