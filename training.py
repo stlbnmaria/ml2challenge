@@ -134,7 +134,7 @@ def tuning_estimator(model_class: str) -> None:
     pipe = get_training_pipeline(estimator, feat_eng, drop_list)
 
     # perform grid tuning
-    clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=4, cv=5, return_train_score=True)
+    clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=4, cv=5, return_train_score=True, verbose=10)
     clf.fit(X, y)
 
     # saving cv_results
