@@ -5,6 +5,9 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 
 def get_modeling_inputs(path: str = "./modeling/") -> tuple:
@@ -54,6 +57,10 @@ def get_estimator(model_class: str) -> tuple:
         estimator = XGBClassifier()
     elif model_class == "Catboost":
         estimator = CatBoostClassifier(verbose=0)
+    elif model_class == "ExtraTrees":
+        estimator = ExtraTreesClassifier()
+    elif model_class == "KNN":
+        estimator = KNeighborsClassifier()
     else:
         print(
             "Specified estimator could not be found in possible list. Used default LogisticRegression() instead."
