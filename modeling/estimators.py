@@ -1,13 +1,16 @@
 import os
 
 from ast import literal_eval
+from catboost import CatBoostClassifier
+from lce import LCEClassifier
+from lightgbm import LGBMClassifier
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
-from catboost import CatBoostClassifier
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
 
 
 def get_modeling_inputs(path: str = "./modeling/") -> tuple:
@@ -50,18 +53,24 @@ def get_estimator(model_class: str) -> tuple:
     """
     feat_eng, drop_list, grid = get_modeling_inputs()
 
+    # define dict of potential estimators
+    estimators = {
+        "LogReg": LogisticRegression(),
+        "KNN": KNeighborsClassifier(),
+        "SVM": SVC(),
+        "DT": DecisionTreeClassifier(),
+        "RF": RandomForestClassifier(),
+        "ExtraTrees": ExtraTreesClassifier(),
+        "XGB": XGBClassifier(),
+        "Catboost": CatBoostClassifier(verbose=0), 
+        "LightGBM": LGBMClassifier(), 
+        "LCE": LCEClassifier(),      
+    }
+
     # get estimator based on specified model class
-    if model_class == "LogReg":
-        estimator = LogisticRegression()
-    elif model_class == "XGB":
-        estimator = XGBClassifier()
-    elif model_class == "Catboost":
-        estimator = CatBoostClassifier(verbose=0)
-    elif model_class == "ExtraTrees":
-        estimator = ExtraTreesClassifier()
-    elif model_class == "KNN":
-        estimator = KNeighborsClassifier()
-    else:
+    try:
+        estimator = estimators[model_class]
+    except:
         print(
             "Specified estimator could not be found in possible list. Used default LogisticRegression() instead."
         )
