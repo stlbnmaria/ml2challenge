@@ -27,10 +27,10 @@ if __name__ == "__main__":
     input_args = vars(args)
 
     if input_args["goal"] == "test":
-        training_cv(model_class=input_args["model"], n_jobs=input_args["n_jobs"])
+        training_cv(model_class=input_args["model"], n_jobs=input_args["parallel"])
     elif input_args["goal"] == "submission":
         run_train_submission(
             model_class=input_args["model"], sub_name=input_args["subname"]
         )
     elif input_args["goal"] == "tuning":
-        tuning_estimator(model_class=input_args["model"], n_jobs=input_args["n_jobs"])
+        tuning_estimator(model_class=input_args["model"], n_jobs=input_args["parallel"])
