@@ -56,7 +56,7 @@ def get_training_pipeline(
     return pipe
 
 
-def training_cv(model_class: str) -> None:
+def training_cv(model_class: str, n_jobs: int = 6) -> None:
     """
     This function trains an estimator on a 5-fold cv of the train data set
     and prints the train and test accuracy on every fold.
@@ -77,7 +77,7 @@ def training_cv(model_class: str) -> None:
         X=X,
         y=y,
         cv=cv,
-        n_jobs=6,
+        n_jobs=n_jobs,
         scoring="accuracy",
         return_train_score=True,
         return_estimator=True,
@@ -118,7 +118,7 @@ def training_estimator(model_class: str) -> tuple:
     return pipe, le
 
 
-def tuning_estimator(model_class: str) -> None:
+def tuning_estimator(model_class: str, n_jobs: int = 6) -> None:
     """
     This function performs grid tuning for an estimator and saves the results in a subfolder of modeling.
     """
@@ -134,7 +134,7 @@ def tuning_estimator(model_class: str) -> None:
     pipe = get_training_pipeline(estimator, feat_eng, drop_list)
 
     # perform grid tuning
-    clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=4, cv=5, return_train_score=True, verbose=10)
+    clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=n_jobs, cv=5, return_train_score=True, verbose=10)
     clf.fit(X, y)
 
     # saving cv_results
