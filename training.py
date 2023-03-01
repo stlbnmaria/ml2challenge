@@ -2,15 +2,16 @@ from datetime import datetime
 import os
 from typing import Optional
 
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold, cross_validate, GridSearchCV
 from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
 
 from utils import get_possible_feature_eng, load_train_data
 from modeling.estimators import get_estimator
 
-# TODO: think about trying PCA
 # TODO: first try different models, then different feature engineering, then tune the best three models
 # TODO: think about creating ensmeble/second layer prediction model in the end
 
@@ -22,14 +23,12 @@ def select_feature_engineering(
     This function selects pipeline-ready feature engineering transformations
     for the model training. The drop_list should specify a list of booleans if the
     original variable should be droped after the feature engineering. The feat_eng should
-    specify a list of strings, which feature engineering to select.
+    specify a list of strings, which feature engineering to select. 
     """
     # get all possible transformations
     transf = get_possible_feature_eng(drop_list)
-
     # select all transformations from list
     selected_transf = {key: transf[key] for key in feat_eng}
-
     # return transformations as list of tuples
     return list(selected_transf.items())
 
@@ -38,6 +37,7 @@ def get_training_pipeline(
     estimator,
     feat_eng: Optional[list[str]] = None,
     drop_list: Optional[list[bool]] = None,
+    pca_n_components: Optional[int] = None,
 ) -> Pipeline:
     """
     This functions creates a sklearn pipeline (incl. data engineering, model)
@@ -48,6 +48,11 @@ def get_training_pipeline(
         engineering = select_feature_engineering(feat_eng, drop_list)
     else:
         engineering = []
+
+    # add PCA transformation to pipeline if pca_n_components is specified
+    if pca_n_components is not None:
+        pca = PCA(n_components=pca_n_components)
+        engineering.append(('pca', pca))
 
     # concat engineering and estimator and make sklearn pipeline
     pipe_steps = engineering + [("model", estimator)]
@@ -63,11 +68,11 @@ def training_cv(model_class: str, n_jobs: int = 6) -> None:
     """
     # define the input varibales
     X, y, _ = load_train_data()
-    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
+    estimator, feat_eng, drop_list, grid, pca_components = get_estimator(model_class)
     cv = KFold(shuffle=True)
 
     # load pipe
-    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list, pca_components)
     if grid is not None:
         pipe.set_params(**grid)
 
@@ -102,10 +107,10 @@ def training_estimator(model_class: str) -> tuple:
     """
     # define the input varibales
     X, y, le = load_train_data()
-    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
+    estimator, feat_eng, drop_list, grid, pca_components = get_estimator(model_class)
 
     # get pipe and fit it on the train data
-    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list, pca_components)
     if grid is not None:
         pipe.set_params(**grid)
     pipe.fit(
@@ -124,14 +129,14 @@ def tuning_estimator(model_class: str, n_jobs: int = 6) -> None:
     """
     # define the input varibales
     X, y, _ = load_train_data()
-    estimator, feat_eng, drop_list, grid = get_estimator(model_class)
+    estimator, feat_eng, drop_list, grid, pca_components = get_estimator(model_class)
     out_path = os.path.join("./modeling", model_class)
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     timestamp = datetime.today().strftime("%Y%m%d_%H%M")
 
     # load pipe
-    pipe = get_training_pipeline(estimator, feat_eng, drop_list)
+    pipe = get_training_pipeline(estimator, feat_eng, drop_list, pca_components)
 
     # perform grid tuning
     clf = GridSearchCV(estimator=pipe, param_grid=grid, scoring="accuracy", n_jobs=n_jobs, cv=5, return_train_score=True, verbose=10)
