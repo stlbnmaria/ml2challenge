@@ -1,15 +1,19 @@
 import os
 from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 from utils import load_test_data
 from training import training_estimator
 
-# TODO: write function to plot confusion matrix to understand predictions
+# TODO: write function to plot multiclass ROC curve to understand predictions and plot for paper
+#       https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html
 
 
 def predict_on_test(classifier: Pipeline, le: LabelEncoder) -> tuple[np.array]:
@@ -59,3 +63,15 @@ def run_train_submission(model_class: str, sub_name: str) -> None:
     """
     classifier, le = training_estimator(model_class)
     create_submission(classifier, le, sub_name)
+
+
+def plot_confusion_matrix(true: np.array, pred: np.array):
+    """
+    This function creates and plots a confusion matrix based on true and predicted labels.
+    """
+    plt.figure(figsize=(10,6))
+    fx = sns.heatmap(confusion_matrix(true, pred), annot=True, fmt=".2f",cmap="GnBu")
+    fx.set_title('Confusion Matrix \n');
+    fx.set_xlabel('\n Predicted Values\n')
+    fx.set_ylabel('Actual Values\n');
+    plt.show()
