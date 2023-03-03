@@ -42,7 +42,14 @@ def get_modeling_inputs(path: str = "./modeling/") -> tuple:
     except:
         grid = None
 
-    return feat_eng, drop_list, grid
+    # extract number of PCA components
+    pca_components = modeling_inputs["pca_components"][0]
+    try:
+        pca_components = int(pca_components)
+    except:
+        pca_components = None
+
+    return feat_eng, drop_list, grid, pca_components
 
 
 def get_estimator(model_class: str) -> tuple:
@@ -51,7 +58,7 @@ def get_estimator(model_class: str) -> tuple:
     model class and returns the feature engineering selection inputs and
     hyperparameter grid.
     """
-    feat_eng, drop_list, grid = get_modeling_inputs()
+    feat_eng, drop_list, grid, pca_components = get_modeling_inputs()
 
     # define dict of potential estimators
     estimators = {
@@ -78,5 +85,6 @@ def get_estimator(model_class: str) -> tuple:
         feat_eng = ["scaling"]
         drop_list = None
         grid = None
+        pca_components = None
 
-    return estimator, feat_eng, drop_list, grid
+    return estimator, feat_eng, drop_list, grid, pca_components
