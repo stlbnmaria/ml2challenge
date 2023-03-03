@@ -69,7 +69,7 @@ def training_cv(model_class: str, n_jobs: int = 6) -> None:
     # define the input varibales
     X, y, _ = load_train_data()
     estimator, feat_eng, drop_list, grid, pca_components = get_estimator(model_class)
-    cv = KFold(shuffle=True)
+    cv = KFold(shuffle=True, random_state=0)
 
     # load pipe
     pipe = get_training_pipeline(estimator, feat_eng, drop_list, pca_components)
@@ -99,6 +99,8 @@ def training_cv(model_class: str, n_jobs: int = 6) -> None:
     print(
         f"----------- Mean test accuracy:  {np.mean(cv_results['test_score']):.3f} -----------"
     )
+
+    return cv, cv_results
 
 
 def training_estimator(model_class: str) -> tuple:
