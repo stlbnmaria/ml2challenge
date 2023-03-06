@@ -161,7 +161,7 @@ def climatic_zone(X: pd.DataFrame, drop_original: bool=False) -> pd.DataFrame:
     X["Clim8"] = X.loc[:, X.columns.str.contains("^Soil_Type[3][56789]$|Soil_Type40")].max(axis=1)
 
     if drop_original:
-        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$")])
+        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$|^Soil_Type[0-9]$")])
         X = X.drop(columns=cols)
     return X
 
@@ -188,7 +188,7 @@ def geologic_zone(X: pd.DataFrame, drop_original: bool=False) -> pd.DataFrame:
     X["Geo7"] = X.loc[:, X.columns.str.contains("^Soil_Type[1-6]$|^Soil_Type[1][01238]$|^Soil_Type[3-4]\d$|^Soil_Type[2][4-9]$")].max(axis=1)
 
     if drop_original:
-        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$")])
+        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$|^Soil_Type[0-9]$")])
         X = X.drop(columns=cols)
     return X
 
@@ -209,8 +209,104 @@ def soil_type(X: pd.DataFrame, drop_original: bool=False) -> pd.DataFrame:
     X["Soil_Other"] = X.loc[:, X.columns.str.contains("^Soil_Type[78]$|^Soil_Type[1][45679]$|^Soil_Type[2][0123]$")].max(axis=1)
 
     if drop_original:
-        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$")])
+        cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$|^Soil_Type[0-9]$")])
         X = X.drop(columns=cols)
+    return X
+
+
+def aggregate_elevation(X: pd.DataFrame, drop_original: bool=False, agg_by: str = "Wilderniss", type: str ="train") -> pd.DataFrame:
+    """
+    This function takes the grouped mean of Elevation per Wilderness Area or Soil Type to create an 
+    aggregated Elevation variable. It either assigns a predefined value that has been calculated on the whole 
+    train data or a dynamic value based on the input.
+    """
+
+    X = X.copy()  # modify a copy of X
+
+    if type == "train":
+        if agg_by == "Wilderniss":
+            # means of elevation on all train data
+            value_dict = {"Wilderness_Area1": 3000.780, 
+                          "Wilderness_Area2": 3325.255, 
+                          "Wilderness_Area3": 2917.681, 
+                          "Wilderness_Area4": 2258.814}
+
+            cols = list(value_dict.keys())
+            mel = X[cols].melt(ignore_index=False, var_name="Wilderniss_Elevation")
+            mel = mel.loc[mel.value == 1, "Wilderniss_Elevation"]
+
+            X["Wilderniss_Elevation"].replace(value_dict, inplace=True)
+        
+        elif agg_by == "Soil_Type":
+            # means of elevation on all train data
+            value_dict = {"Soil_Type1": 2168.732, 
+                          "Soil_Type10": 2376.132, 
+                          "Soil_Type11": 2649.274,
+                          "Soil_Type12": 2817.558,
+                          "Soil_Type13": 2841.743,
+                          "Soil_Type14": 2210.023,
+                          "Soil_Type16": 2410.736,
+                          "Soil_Type17": 2364.798,
+                          "Soil_Type18": 2523.091,
+                          "Soil_Type19": 3031.038,
+                          "Soil_Type2": 2461.158,
+                          "Soil_Type20": 2766.273,
+                          "Soil_Type21": 3079.900,
+                          "Soil_Type22": 3153.178,
+                          "Soil_Type23": 3046.248,
+                          "Soil_Type24": 3040.551,
+                          "Soil_Type25": 3243.500,
+                          "Soil_Type26": 2874.083,
+                          "Soil_Type27": 3272.875,
+                          "Soil_Type28": 2743.714,
+                          "Soil_Type29": 2981.274,
+                          "Soil_Type3": 2260.276,
+                          "Soil_Type30": 2839.507,
+                          "Soil_Type31": 3026.934,
+                          "Soil_Type32": 3087.979,
+                          "Soil_Type33": 2993.606,
+                          "Soil_Type34": 3081.778,
+                          "Soil_Type35": 3350.019,
+                          "Soil_Type36": 3390.214,
+                          "Soil_Type37": 3402.531,
+                          "Soil_Type38": 3348.489,
+                          "Soil_Type39": 3332.038,
+                          "Soil_Type4": 2539.526,
+                          "Soil_Type40": 3474.542,
+                          "Soil_Type5": 2172.127,
+                          "Soil_Type6": 2368.172,
+                          "Soil_Type7": 2909.000,
+                          "Soil_Type8": 2916.000,
+                          "Soil_Type9": 2578.500,
+                          "Soil_Type15": 2748.650,} # this value was not available and replaced by the mean over all Elevation
+
+            cols = list(value_dict.keys())
+            mel = X[cols].melt(ignore_index=False, var_name="Soil_Type_Elevation")
+            mel = mel.loc[mel.value == 1, "Soil_Type_Elevation"]
+
+            X["Soil_Type_Elevation"].replace(value_dict, inplace=True)
+    
+    else:
+        if agg_by == "Wilderniss":
+            # mean of Elevation per Wilderniss Area
+            cols = ["Wilderness_Area1", "Wilderness_Area2", "Wilderness_Area3", "Wilderness_Area4"]
+            mel = X[cols].melt(ignore_index=False)
+            mel = mel.loc[mel.value == 1, "variable"]
+            X = pd.merge(X, mel, left_index=True, right_index=True)
+            X['Wilderniss_Elevation'] = X.groupby('variable')['Elevation'].transform('mean')
+            X.drop(columns=["variable"], inplace=True)
+        
+        elif agg_by == "Soil_Type":
+            # mean of Elevation per Soil Type
+            cols = list(X.columns[X.columns.str.contains("^Soil_Type[0-9][0-9]$|^Soil_Type[0-9]$")])
+            mel = X[cols].melt(ignore_index=False)
+            mel = mel.loc[mel.value == 1, "variable"]
+            X = pd.merge(X, mel, left_index=True, right_index=True)
+            X['Soil_Type_Elevation'] = X.groupby('variable')['Elevation'].transform('mean')
+            X.drop(columns=["variable"], inplace=True)
+
+    if drop_original:
+        X = X.drop(columns=["Elevation"] + cols)
     return X
 
 
