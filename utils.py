@@ -17,7 +17,7 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
     be droped after the feature engineering. If it is None, no variables will be droped.
     """
     if drop_list is None:
-        drop_list = [False] * 9
+        drop_list = [False] * 10
 
     transformations = {
         "euclidean_dist": FunctionTransformer(
@@ -46,6 +46,9 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
         ),
         "soil_type": FunctionTransformer(
             data_engineering.soil_type, kw_args={"drop_original": drop_list[8]}
+        ),
+        "aggregate_elevation": FunctionTransformer(
+            data_engineering.aggregate_elevation, kw_args={"drop_original": drop_list[9]}
         ),
         "scaling": FunctionTransformer(data_engineering.scaling),
     }
