@@ -234,7 +234,7 @@ def aggregate_elevation(X: pd.DataFrame, drop_original: bool=False, agg_by: str 
             cols = list(value_dict.keys())
             mel = X[cols].melt(ignore_index=False, var_name="Wilderniss_Elevation")
             mel = mel.loc[mel.value == 1, "Wilderniss_Elevation"]
-
+            X = pd.merge(X, mel, left_index=True, right_index=True)
             X["Wilderniss_Elevation"].replace(value_dict, inplace=True)
         
         elif agg_by == "Soil_Type":
@@ -283,7 +283,7 @@ def aggregate_elevation(X: pd.DataFrame, drop_original: bool=False, agg_by: str 
             cols = list(value_dict.keys())
             mel = X[cols].melt(ignore_index=False, var_name="Soil_Type_Elevation")
             mel = mel.loc[mel.value == 1, "Soil_Type_Elevation"]
-
+            X = pd.merge(X, mel, left_index=True, right_index=True)
             X["Soil_Type_Elevation"].replace(value_dict, inplace=True)
     
     else:
