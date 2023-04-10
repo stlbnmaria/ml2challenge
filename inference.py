@@ -66,12 +66,12 @@ def plot_confusion_matrix(true: np.array, pred: np.array):
     """
     This function creates and plots a confusion matrix based on true and predicted labels.
     """
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(10, 6))
     sns.set(font_scale=1.4)
-    fx = sns.heatmap(confusion_matrix(true, pred), annot=True, fmt=".2f",cmap="GnBu")
-    fx.set_title('Confusion Matrix \n')
-    fx.set_xlabel('\n Predicted Values\n')
-    fx.set_ylabel('Actual Values\n')
+    fx = sns.heatmap(confusion_matrix(true, pred), annot=True, fmt=".2f", cmap="GnBu")
+    fx.set_title("Confusion Matrix \n")
+    fx.set_xlabel("\n Predicted Values\n")
+    fx.set_ylabel("Actual Values\n")
     fx.set_yticklabels([1, 2, 3, 4, 5, 6, 7])
     fx.set_xticklabels([1, 2, 3, 4, 5, 6, 7])
     plt.show()

@@ -16,7 +16,10 @@ parser.add_argument(
     "--subname", type=str, default=r"test", help="Name of the submission"
 )
 parser.add_argument(
-    "--parallel", type=int, default=6, help="Number of jobs to run in parallel for cv and tuning"
+    "--parallel",
+    type=int,
+    default=6,
+    help="Number of jobs to run in parallel for cv and tuning",
 )
 args = parser.parse_args()
 

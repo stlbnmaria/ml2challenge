@@ -48,7 +48,8 @@ def get_possible_feature_eng(drop_list: Optional[list] = None) -> dict:
             data_engineering.soil_type, kw_args={"drop_original": drop_list[8]}
         ),
         "aggregate_elevation": FunctionTransformer(
-            data_engineering.aggregate_elevation, kw_args={"drop_original": drop_list[9]}
+            data_engineering.aggregate_elevation,
+            kw_args={"drop_original": drop_list[9]},
         ),
         "scaling": FunctionTransformer(data_engineering.scaling),
     }
