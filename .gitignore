@@ -2,3 +2,7 @@ __pycache__
 .DS_Store
 .ipynb_checkpoints
 data
+submissions
+modeling_inputs.xlsx
+catboost_info
+modeling_tracker.xlsx

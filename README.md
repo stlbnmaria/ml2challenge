@@ -34,14 +34,8 @@ From these, we want to predict:
 
 Kaggle provides a labeled training data set of 15,120 observations, and an unlabeled test data set of 581,012 observations to be used for the submission.
 
-* training set of 15,120 observations
-* test set of 581,012 observations
-* sample submission
+## Results
 
-## Latex Report
-https://www.overleaf.com/project/63e22b0c159f323acb0995f2
+The final model is an XGBoost with diverse feature engineering, leading to a validation accuracy of 0.907. The Kaggle score on the public test set is 0.835. Below, the confusion matrix for this model is displayed.
 
-## Possible paper & sources
-- https://www.ijcaonline.org/archives/volume182/number30/wagh-2018-ijca-918191.pdf
-- https://www.kaggle.com/code/rsizem2/forest-cover-type-feature-engineering
-- https://maelfabien.github.io/project/forest/#
+<img src="modeling/confusion_XGB.png" width="600"/>
